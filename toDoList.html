@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>ToDoList—最简单的待办事项列表</title>
+		<link rel="stylesheet" href="./index.css">
+	</head>
+	<body>
+		<div id="app" class="app">
+			<header>
+				<section>
+						<span>ToDoList</span>
+						<input type="text" v-model.trim="todo" @keyup.enter="confirm" placeholder="添加ToDo"/>
+				</section>
+			</header>
+			<section>
+				<!-- 正在进行 -->
+				<!-- 当v-for循环中要使用v-model时，外层的数组必须是[{},{}],不能是[1,2,3] -->
+				<div class="panel">
+					<div class="panel_title">
+						<span>正在进行</span>
+						<span v-text="data.undone && data.undone.length"></span>
+					</div>
+					<div class="panel_list" v-for="(item,index) in data.undone">
+						<span @click='transform(item,"up")'></span>
+						<span>
+							<input type="text" v-model="item.task" @keyup.enter="edit(item,index,'up')"> 
+						</span>
+						<span @click="del(item)"></span>
+					</div>
+				</div>
+				<!-- 已经完成 -->
+				<div class="panel">
+					<div class="panel_title">
+						<span>已经完成</span>
+						<span v-text="data.done && data.done.length"></span>
+					</div>
+					<div class="panel_list panel_list-done" v-for="(item,index) in data.done">
+						<span @click='transform(item)'></span>
+						<span>
+							<input type="text" v-model="item.task" @keyup.enter="edit(item,index)">
+						</span>
+						<span @click="del(item)"></span>
+					</div>
+				</div>
+			</section>
+			<footer>
+				Copyright &copy; 2019 todolist.cn <a href="javascript:;">clear</a>
+			</footer>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript">
+			var baseUrl="http://10.36.136.170:9999";
+			function fetch(url,method,data,callback){
+				$.ajax({
+					url:baseUrl+url,
+					method:method,
+					data:data,
+					success:function(res){
+						console.log(res)
+						if(res.err==0){
+							callback && callback(res)
+						}
+					},
+					fail:function(err){
+						console.log('调接口失败')
+					}
+				})
+			}
+		</script>
+		<script type="text/javascript" src="index.js"></script>
+	</body>
+</html>
